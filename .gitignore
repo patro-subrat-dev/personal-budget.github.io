@@ -1,0 +1,16 @@
+# Virtual env
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# pytest cache
+.pytest_cache/
+
+# DB file
+budget.db
+
+# Env files
+.env
