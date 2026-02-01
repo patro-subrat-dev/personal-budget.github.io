@@ -1,9 +1,4 @@
-import sys
-from pathlib import Path
 import tempfile
-
-# Ensure package import works when running tests from repo root
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from click.testing import CliRunner
 from personal_budget.cli import cli

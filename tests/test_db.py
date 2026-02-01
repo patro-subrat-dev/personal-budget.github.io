@@ -1,11 +1,5 @@
-import sys
-from pathlib import Path
 import tempfile
 import sqlite3
-
-# Ensure package import works when running tests from repo root
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-
 from personal_budget import db
 
 
