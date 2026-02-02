@@ -23,7 +23,8 @@ def init_db(conn: sqlite3.Connection):
     cur.executescript(DB_SCHEMA)
     conn.commit()
 
-
+def get_connection(db_path="budget.db"):
+    return sqlite3.connect(db_path, check_same_thread=False)
 def add_transaction(conn: sqlite3.Connection, date: str, amount: float, category: str, description: str, ttype: str):
     cur = conn.cursor()
     cur.execute(
@@ -59,7 +60,6 @@ def get_all_transactions(conn: sqlite3.Connection):
     cur = conn.cursor()
     cur.execute("SELECT id, date, amount, category, description, type FROM transactions ORDER BY id ASC")
     return cur.fetchall()
-
 
 def import_transactions_from_csv(conn: sqlite3.Connection, csv_text: str) -> dict:
     """Import transactions from CSV text. Returns dict with counts and errors.
@@ -109,10 +109,3 @@ def category_totals(conn: sqlite3.Connection, year: int, month: int) -> dict:
         "expense": {r[0]: float(r[1] or 0.0) for r in expense_rows},
         "income": {r[0]: float(r[1] or 0.0) for r in income_rows},
     }
-def get_connection(db_path="budget.db"):
-    return sqlite3.connect(db_path, check_same_thread=False)
-
-def add_transaction(conn, date, amount, category, desc):
-    query = "INSERT INTO transactions (date, amount, category, description) VALUES (?, ?, ?, ?)"
-    conn.execute(query, (date, amount, category, desc))
-    conn.commit()
