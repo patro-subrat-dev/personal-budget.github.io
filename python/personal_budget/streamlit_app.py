@@ -1,8 +1,11 @@
 import streamlit as st
+from db import import_transactions_from_csv
 import datetime
+import os
 import io
 import csv
-from personal_budget.db import get_connection, init_db, add_transaction, list_transactions, monthly_summary, get_all_transactions, category_totals
+import pandas as pd
+from db import get_connection, init_db, add_transaction, list_transactions, monthly_summary, get_all_transactions, category_totals
 
 DB_PATH = "budget.db"
 
@@ -62,11 +65,14 @@ if st.button("Show summary"):
         for c, amt in cats["income"].items():
             st.write(f"- {c}: {amt:.2f}")
 
-# Import / Export CSV
+
 st.header("Import / Export CSV")
-# Download template
-with open("..\\PERSONAL_BUDGET_TEMPLATE.csv", "r", encoding="utf-8") as f:
-    template = f.read()
+import os
+base_dir = os.path.dirname(__file__)
+template_path = os.path.join(base_dir, "PERSONAL_BUDGET_TEMPLATE.csv")
+
+
+with open(template_path, "r", encoding="utf-8") as f:template = f.read()
 st.download_button("Download CSV template", template.encode("utf-8"), file_name="PERSONAL_BUDGET_TEMPLATE.csv", mime="text/csv")
 
 uploaded = st.file_uploader("Upload CSV (date,amount,category,description,type)", type=["csv"]) 
