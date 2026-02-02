@@ -109,3 +109,10 @@ def category_totals(conn: sqlite3.Connection, year: int, month: int) -> dict:
         "expense": {r[0]: float(r[1] or 0.0) for r in expense_rows},
         "income": {r[0]: float(r[1] or 0.0) for r in income_rows},
     }
+def get_connection(db_path="budget.db"):
+    return sqlite3.connect(db_path, check_same_thread=False)
+
+def add_transaction(conn, date, amount, category, desc):
+    query = "INSERT INTO transactions (date, amount, category, description) VALUES (?, ?, ?, ?)"
+    conn.execute(query, (date, amount, category, desc))
+    conn.commit()
