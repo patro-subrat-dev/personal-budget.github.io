@@ -44,6 +44,10 @@ Start the simple web UI with Streamlit:
 # from workspace root
 streamlit run python/personal_budget/personal_budget/streamlit_app.py
 ```
+or
+```bash
+& C:/Users/rars4/SUBRAT/.venv/Scripts/python.exe -m streamlit run c:/Users/rars4/SUBRAT/python/personal_budget/streamlit_app.py
+```
 
 This opens a small web UI where you can add transactions and view summaries.
 
