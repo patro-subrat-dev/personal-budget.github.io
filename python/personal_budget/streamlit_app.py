@@ -30,15 +30,16 @@ with st.form("add_txn"):
 
     submitted = st.form_submit_button("Add transaction")
 
-  if submitted:
+    if submitted:
         conn = get_connection(DB_PATH)
         init_db(conn)
         add_transaction(conn, date.isoformat(), float(amount), category, desc, ttype)
-
-st.session_state.form_id += 1  # This changes the keys, resetting the widgets
-st.success("Transaction added and form cleared!")
-st.rerun() # Refresh the page to show empty field
-st.header("Recent transactions")
+        
+        # These must be inside the 'if submitted' block
+        st.session_state.form_id += 1 
+        st.success("Transaction added and form cleared!")
+        st.rerun()
+        
 conn = get_connection(DB_PATH)
 init_db(conn)
 rows = list_transactions(conn, limit=100)
