@@ -13,21 +13,31 @@ st.title("Personal Budget — Simple Tracker 🧾")
 
 st.markdown("A tiny Streamlit UI to add transactions and view lists/summaries.")
 
+if 'form_id' not in st.session_state:
+    st.session_state.form_id = 0
+
+# --- UPDATE YOUR FORM SECTION ---
+# Create a unique key for the inputs based on form_id
+suffix = str(st.session_state.form_id)
+
 # Add transaction form
 with st.form("add_txn"):
-    ttype = st.selectbox("Type", ["income", "expense"])
-    amount = st.number_input("Amount", min_value=0.0, format="%.2f")
-    category = st.text_input("Category", value="General")
-    desc = st.text_input("Description", value="")
-    date = st.date_input("Date", value=datetime.date.today())
+    ttype = st.selectbox("Type", ["income", "expense"], key="type_" + suffix)
+    amount = st.number_input("Amount", min_value=0.0, format="%.2f", key="amount_" + suffix)
+    category = st.text_input("Category", value="General", key="cat_" + suffix)
+    desc = st.text_input("Description", value="", key="desc_" + suffix)
+    date = st.date_input("Date", value=datetime.date.today(), key="date_" + suffix)
+
     submitted = st.form_submit_button("Add transaction")
 
-    if submitted:
+  if submitted:
         conn = get_connection(DB_PATH)
         init_db(conn)
         add_transaction(conn, date.isoformat(), float(amount), category, desc, ttype)
-        st.success("Transaction added")
 
+st.session_state.form_id += 1  # This changes the keys, resetting the widgets
+st.success("Transaction added and form cleared!")
+st.rerun() # Refresh the page to show empty field
 st.header("Recent transactions")
 conn = get_connection(DB_PATH)
 init_db(conn)
@@ -119,29 +129,3 @@ if rows_all:
 else:
     st.info("No data for reports yet.")
 
-# --- ADD THIS AT THE TOP OF YOUR FILE (after imports) ---
-if 'form_id' not in st.session_state:
-    st.session_state.form_id = 0
-
-# --- UPDATE YOUR FORM SECTION ---
-# Create a unique key for the inputs based on form_id
-suffix = str(st.session_state.form_id)
-
-with st.form("add_txn"):
-    ttype = st.selectbox("Type", ["income", "expense"], key="type_" + suffix)
-    amount = st.number_input("Amount", min_value=0.0, format="%.2f", key="amount_" + suffix)
-    category = st.text_input("Category", value="General", key="cat_" + suffix)
-    desc = st.text_input("Description", value="", key="desc_" + suffix)
-    date = st.date_input("Date", value=datetime.date.today(), key="date_" + suffix)
-    
-    submitted = st.form_submit_button("Add transaction")
-
-    if submitted:
-        conn = get_connection(DB_PATH)
-        init_db(conn)
-        add_transaction(conn, date.isoformat(), float(amount), category, desc, ttype)
-        
-        # --- THE CUSTOM CLEAR LOGIC ---
-        st.session_state.form_id += 1  # This changes the keys, resetting the widgets
-        st.success("Transaction added and form cleared!")
-        st.rerun() # Refresh the page to show empty fields
